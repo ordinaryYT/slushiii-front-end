@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Live Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #chat-container {
+      display: none; /* Hide until chat ID is loaded */
+      margin-top: 20px;
+    }
+    iframe {
+      border: none;
+      width: 350px;
+      height: 500px;
+    }
+    .loading {
+      font-size: 18px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>YouTube Live Chat</h1>
+  <div id="loading" class="loading">Loading live chat...</div>
+  <div id="chat-container">
+    <p>Live chat is now active!</p>
+    <iframe id="live-chat" src="" title="YouTube Live Chat"></iframe>
+  </div>
+
+  <script>
+    // Function to fetch the liveChatId from the backend
+    async function fetchLiveChatId() {
+      try {
+        // Replace with your backend URL
+        const response = await fetch('/api/live-chat-id');
+        const data = await response.json();
+
+        if (data.liveChatId) {
+          document.getElementById('loading').style.display = 'none'; // Hide loading text
+          document.getElementById('chat-container').style.display = 'block'; // Show chat container
+
+          // Set the live chat iframe src with the liveChatId
+          const liveChatId = data.liveChatId;
+          const iframe = document.getElementById('live-chat');
+          iframe.src = `https://www.youtube.com/live_chat?v=${liveChatId}&embed_domain=${window.location.hostname}`;
+        } else {
+          alert('No active live stream found.');
+        }
+      } catch (error) {
+        console.error('Error fetching liveChatId:', error);
+        alert('Failed to load live chat.');
+      }
+    }
+
+    // Fetch liveChatId when the page loads
+    window.onload = fetchLiveChatId;
+  </script>
+</body>
+</html>
